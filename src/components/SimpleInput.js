@@ -1,18 +1,24 @@
-import { useState } from "react";
+
+import useInput from "../hooks/use-inputs";
 
 const SimpleInput = (props) => {
-  const [enteredName, setEnteredName] = useState("");
-  const [nameIsTouched, setNameIsTouched] = useState(false);
+  const {
+    value: enteredName,
+    isValid: isValidName,
+    hasError: nameInputIsInvalid,
+    valueChangeHandler: nameInputChangeHandler,
+    valueBlurHandler: nameInputBlurHandler,
+    reset: resetName,
+  } = useInput((value) => value.trim().length !== 0);
 
-  const [enteredEmail, setEnteredEmail] = useState("");
-  const [emailIsTouched, setEmailIsTouched] = useState(false);
-
-  const isValidName = enteredName.trim().length !== 0;
-  const nameInputIsInvalid = !isValidName && nameIsTouched;
-
-  const isValidEmail =
-    enteredEmail.includes("@") && enteredEmail.trim().length > 1;
-  const emailInputIsInvalid = !isValidEmail && emailIsTouched;
+  const {
+    value: enteredEmail,
+    isValid: isValidEmail,
+    hasError: emailInputIsInvalid,
+    valueChangeHandler: emailInputChangeHandler,
+    valueBlurHandler: emailInputBlurHandler,
+    reset: resetEmail,
+  } = useInput((value) => value.includes("@") && value.trim().length > 1);
 
   let formIsValid = false;
 
@@ -20,34 +26,15 @@ const SimpleInput = (props) => {
     formIsValid = true;
   }
 
-  const nameInputChangeHandler = (event) => {
-    setEnteredName(event.target.value);
-  };
-
-  const emailInputChangeHandler = (event) => {
-    setEnteredEmail(event.target.value);
-  };
-
   const formSubmissionHandler = (event) => {
     event.preventDefault();
-    setNameIsTouched(true);
-    setEmailIsTouched(true);
+
     if (!isValidName || !isValidEmail) {
       return;
     }
 
-    setEnteredName("");
-    setEnteredEmail("");
-    setNameIsTouched(false);
-    setEmailIsTouched(false);
-  };
-
-  const nameInputBlurHandler = (event) => {
-    setNameIsTouched(true);
-  };
-
-  const emailInputBlurHandler = (event) => {
-    setEmailIsTouched(true);
+    resetName();
+    resetEmail();
   };
 
   const nameInputClases = nameInputIsInvalid
